@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+# Compiling junk
+obj/
+obj/*
+# Emacs junk
+*#
+# lsp junk
+.cache/
+.cache/*

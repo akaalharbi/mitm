@@ -1,0 +1,78 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Iinclude",
+      "-I/usr/lib/x86_64-linux-gnu/openmpi/include",
+      "-I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi",
+      "-march=native",
+      "-fno-strict-aliasing",
+      "-g3",
+      "-Wall",
+      "-o",
+      "obj/dict.o",
+      "src/dict.c"
+    ],
+    "directory": "/home/ahmed/mitm",
+    "file": "/home/ahmed/mitm/src/dict.c",
+    "output": "/home/ahmed/mitm/obj/dict.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Iinclude",
+      "-I/usr/lib/x86_64-linux-gnu/openmpi/include",
+      "-I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi",
+      "-march=native",
+      "-fno-strict-aliasing",
+      "-g3",
+      "-Wall",
+      "-o",
+      "obj/receiver.o",
+      "src/receiver.c"
+    ],
+    "directory": "/home/ahmed/mitm",
+    "file": "/home/ahmed/mitm/src/receiver.c",
+    "output": "/home/ahmed/mitm/obj/receiver.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Iinclude",
+      "-I/usr/lib/x86_64-linux-gnu/openmpi/include",
+      "-I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi",
+      "-march=native",
+      "-fno-strict-aliasing",
+      "-g3",
+      "-Wall",
+      "-o",
+      "obj/sender.o",
+      "src/sender.c"
+    ],
+    "directory": "/home/ahmed/mitm",
+    "file": "/home/ahmed/mitm/src/sender.c",
+    "output": "/home/ahmed/mitm/obj/sender.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Iinclude",
+      "-I/usr/lib/x86_64-linux-gnu/openmpi/include",
+      "-I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi",
+      "-march=native",
+      "-fno-strict-aliasing",
+      "-g3",
+      "-Wall",
+      "-o",
+      "obj/mitm.o",
+      "src/mitm.c"
+    ],
+    "directory": "/home/ahmed/mitm",
+    "file": "/home/ahmed/mitm/src/mitm.c",
+    "output": "/home/ahmed/mitm/obj/mitm.o"
+  }
+]
