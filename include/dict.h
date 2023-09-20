@@ -9,8 +9,14 @@
 ///                  data structure                     ///
 ///-----------------------------------------------------///
 
-typedef struct  { // todo alignement
-  u32* values;
+
+
+
+typedef struct  { // todo think about replacement policy!
+  /* store pair pair0=(key0, value0) in a seperate arrays for alignment. */
+  /* The index of value0 in values is same as the index of key0 in keys. */
+  u32* values; 
+  u32* keys;
   size_t nelements; // total number of elements in the dictionary
   size_t nbuckets; 
   size_t nslots_per_bucket; // = nelements / nbuckets
