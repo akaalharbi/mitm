@@ -1,28 +1,49 @@
 #ifndef FUNCTIONS_MITM
 #define FUNCTIONS_MITM
 #include "numbers_shorthand.hpp"
-#include <stdio.h>
-/// Conventions: output is 
+
+template<typename X_type>
+struct set_type {
+    /*  How many BYTES needed to code an arbitrary element of X */
+    const static size_t length; // I feel it should be a private variable!
 
 
-/* find a collision between f and g */
-/* do we need to provide the length of input  and output? */
-void f(u8 *C_out, size_t C_length, u8 *A_inp, size_t A_inp_length);
-void g(u8 *C_out, size_t C_length, u8 *B_inp, size_t B_inp_length);
 
-/* a decision function for the golden collision. returns non-zero when golden */
-/* e.g. when golden collision occurs, in double encrytpion */
-int test_golden(u8 *A_inp, size_t A_inp_length, u8 *B_inp, size_t B_inp_length);
+    auto random() -> X_type; /* get a random element from X */
+    auto identity() -> X_type; /* Get an element that */
+    /* Serialize an element of X to send for MPI */
+    /* Should we pass a reference to avoid copying? */
+    void serialize(X_type& elm, u8* out); /* to send elm using MPI */
 
-/* Normally, we have  A -> C, A -> C. Here we are looking for C -> A, C -> B */
-/* Functions below should not be complicated. */
-/* In case that output is shorter than the input, we need a way to extend it */
-u8 *send_C_2_A(u8 *A_out, size_t A_length, u8 *C_inp, size_t C_length);
-u8 *send_C_2_B(u8 *B_out, size_t B_length, u8 *C_inp, size_t C_length);
+    //auto is_distinguished(X elm, int diff) -> int;
+private:
 
+};
 
-/* We need to pick a random element from A or B without */
-void random_element_A(u8 *out, size_t A_length);
-void random_element_B(u8 *out, size_t B_length); // I don't think we are going to use it!
+template<typename A_type, typename B_type, typename C_type>
+struct mitm_functions {
+    A_type A;
+    B_type B;
+    C_type C;
+
+    /* INIT */
+    /* Need to provide three instances of the different types */
+    mitm_functions(A_type A, B_type, C_type) : A{A}, B{B}, C{C} {}
+
+    /* Necessary functions provided by the user: */
+    /* f: A -> C */
+    void f(C_type& C_out, A_type& A_inp);
+    /* g: B -> C */
+    void g(C_type& C_out, B_type& B_inp);
+    /* Did we find the golden collision? */
+    int test_golden(A_type& A_inp, B_type& B_inp);
+
+    /* Normally, we have  A -> C, B -> C. Here we are looking for C -> A, C -> B */
+    /* Functions below should not be complicated, only a simple embedding. */
+    /* In case that output is shorter than the input, we need a way to extend it */
+    void send_C_2_A(A_type& A_out, C_type& C_inp); /* should we use move semantics to steal resources? todo */
+    void send_C_2_B(B_type& B_out, C_type& C_inp); /* should we use move semantics to steal resources? todo */
+
+};
 
 #endif 
