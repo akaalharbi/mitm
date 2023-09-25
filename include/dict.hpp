@@ -1,6 +1,6 @@
 #ifndef DICT_MITM
 #define DICT_MITM
-#include "numbers_shorthand.h"
+#include "numbers_shorthand.hpp"
 #include <stdio.h>
 
 

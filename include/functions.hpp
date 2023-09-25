@@ -1,6 +1,6 @@
 #ifndef FUNCTIONS_MITM
 #define FUNCTIONS_MITM
-#include "numbers_shorthand.h"
+#include "numbers_shorthand.hpp"
 #include <stdio.h>
 /// Conventions: output is 
 
@@ -23,6 +23,6 @@ u8 *send_C_2_B(u8 *B_out, size_t B_length, u8 *C_inp, size_t C_length);
 
 /* We need to pick a random element from A or B without */
 void random_element_A(u8 *out, size_t A_length);
-void random_element_B(u8 *out, size_t B_length);
+void random_element_B(u8 *out, size_t B_length); // I don't think we are going to use it!
 
 #endif 
