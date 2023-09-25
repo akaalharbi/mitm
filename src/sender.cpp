@@ -8,9 +8,9 @@
 
 template<typename A_type, typename B_type, typename C_type>
 void sender(mitm_functions<A_type, B_type, C_type> funcs,
-            set_type<A_type> A,
-            set_type<B_type> B,
-            set_type<C_type> C,
+            set_type<A_type>& A,
+            set_type<B_type>& B,
+            set_type<C_type>& C,
             int difficulty, /* n_bits that should = 0 to consider it as a distinguish point*/
             MPI_Comm local_comm,
             MPI_Comm inter_comm)
@@ -26,9 +26,9 @@ void sender(mitm_functions<A_type, B_type, C_type> funcs,
   /* ============================ INIT ====================================== */
   const size_t max_length_inp = std::max(A.length, B.length);
 
-  int myrank, nsenders, nreceivers;
-  MPI_Comm_rank(local_comm, &myrank);
-  MPI_Comm_size(local_comm, &nsenders);
+  int nreceivers;
+  // MPI_Comm_rank(local_comm, &myrank);
+  // MPI_Comm_size(local_comm, &nsenders);
   MPI_Comm_size(inter_comm, &nreceivers); /* todo check this is correct! */
   /* random message base */
   // where to get a_length, and b_length
