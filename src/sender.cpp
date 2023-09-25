@@ -21,10 +21,9 @@ void sender(mitm_functions<A_type, B_type, C_type> funcs,
 
   /* here we should steal the resources. todo use move semantics */
   int f_or_g = 1; /* 1 if f, 0 if g */
-  size_t is_dist = 0;
+  size_t is_dist;
 
   /* ============================ INIT ====================================== */
-  const size_t max_length = std::max(A.length, B.length, C.length);
   const size_t max_length_inp = std::max(A.length, B.length);
 
   int myrank, nsenders, nreceivers;
@@ -33,8 +32,6 @@ void sender(mitm_functions<A_type, B_type, C_type> funcs,
   MPI_Comm_size(inter_comm, &nreceivers); /* todo check this is correct! */
   /* random message base */
   // where to get a_length, and b_length
-
-
   
 
 
@@ -50,8 +47,8 @@ void sender(mitm_functions<A_type, B_type, C_type> funcs,
   /* To know which buffer is ready to send */
   int receivers_countres[nreceivers];
   memset(receivers_countres, 0, nreceivers);
-  int dest = 0;
-  size_t idx = 0;
+  int dest;
+  size_t idx;
 
 
 
@@ -69,7 +66,7 @@ void sender(mitm_functions<A_type, B_type, C_type> funcs,
 
   
   /* ---------------------- GENERATE & SEND ------------------------------- */
-  while (1) {
+  while (true) {
       /* odd -> even -> odd, while loop */
       /* Generate */
       if (f_or_g == 1){
