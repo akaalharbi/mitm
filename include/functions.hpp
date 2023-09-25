@@ -11,24 +11,22 @@ struct set_type {
 
     auto random() -> X_type; /* get a random element from X */
     auto identity() -> X_type; /* Get an element that */
+    auto extract_k_bits(X_type& elm, int n_bits) -> int; /* return k bits from the elm */
     /* Serialize an element of X to send for MPI */
     /* Should we pass a reference to avoid copying? */
     void serialize(X_type& elm, u8* out); /* to send elm using MPI */
 
     //auto is_distinguished(X elm, int diff) -> int;
-private:
 
 };
 
 template<typename A_type, typename B_type, typename C_type>
 struct mitm_functions {
-    A_type A;
-    B_type B;
-    C_type C;
+
 
     /* INIT */
-    /* Need to provide three instances of the different types */
-    mitm_functions(A_type A, B_type, C_type) : A{A}, B{B}, C{C} {}
+    /* */
+    mitm_functions() {}
 
     /* Necessary functions provided by the user: */
     /* f: A -> C */
