@@ -3,14 +3,13 @@
 #include "functions.hpp"
 #include "numbers_shorthand.hpp"
 #include "globals.hpp"
-#define SND_OUTPUTS_TAG 0
 // global constants
 
 template<typename A_type, typename B_type, typename C_type>
 void sender(mitm_functions<A_type, B_type, C_type> funcs,
-            set_type<A_type>& A,
-            set_type<B_type>& B,
-            set_type<C_type>& C,
+            type_functions<A_type>& A,
+            type_functions<B_type>& B,
+            type_functions<C_type>& C,
             int difficulty, /* n_bits that should = 0 to consider it as a distinguish point*/
             MPI_Comm local_comm,
             MPI_Comm inter_comm)
@@ -66,11 +65,11 @@ void sender(mitm_functions<A_type, B_type, C_type> funcs,
           if (!C.extract_k_bits(inp_A, 1)) {
               f_or_g = 0; /* choose g */
               /* update the input for the next iteration */
-              funcs.send_C_2_B(inp_B, out);
+              funcs.send_C_to_B(inp_B, out);
           } else {
-              /* send_C_2_A(A_type& out_A, C_type& inp_C) */
+              /* send_C_to_A(A_type& out_A, C_type& inp_C) */
               /* update the input for the next iteration */
-              funcs.send_C_2_A(inp_A, out);
+              funcs.send_C_to_A(inp_A, out);
           }
           /* if we find a distinguish point, add it to the send buffer */
 
@@ -82,11 +81,11 @@ void sender(mitm_functions<A_type, B_type, C_type> funcs,
           if (C.extract_k_bits(inp_B, 1)) {
               f_or_g = 1; /* choose f */ // todo
               /* update the input for the next iteration */
-              funcs.send_C_2_A(inp_A, out);
+              funcs.send_C_to_A(inp_A, out);
           } else {
-              /* send_C_2_A(A_type& out_A, C_type& inp_C) */
+              /* send_C_to_A(A_type& out_A, C_type& inp_C) */
               /* update the input for the next iteration */
-              funcs.send_C_2_B(inp_B, out);
+              funcs.send_C_to_B(inp_B, out);
           }
 
 
@@ -102,14 +101,14 @@ void sender(mitm_functions<A_type, B_type, C_type> funcs,
           if (f_or_g == 1){
               // snd_buf triple = f_or_g || inp || output
               snd_buf[dest][idx*triple_length] = 1; /* i.e. we are sending f input */
-              A.serialize(inp_A, &snd_buf[ 1 + idx*(triple_length) ]);
+              A.serialize(&snd_buf[1 + idx * (triple_length)], inp_A);
 
           } else{
               // snd_buf triple = f_or_g || inp || output
               snd_buf[dest][idx*triple_length] = 0; /* i.e. we are sending g input */
-              A.serialize(inp_B, &snd_buf[ 1 + idx*(triple_length) ]);
+              A.serialize(&snd_buf[1 + idx * (triple_length)], inp_B);
           }
-          C.serialize(out, &snd_buf[ 1 + max_length_inp + idx*(triple_length) ]);
+          C.serialize(&snd_buf[1 + max_length_inp + idx * (triple_length)], out);
           ++receivers_counters[dest];
 
           if (receivers_counters[dest] == n_msgs){

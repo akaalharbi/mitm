@@ -9,6 +9,6 @@ It's a modification of Wiener's approach, optimized for standard High Performanc
 * `src/mitm.c`
 * `src/sender.c`
 * `src/receiver.c`
-* `src/dict.c`
+* `src/Dictionary.c`
 * `src/utility.c`
 * `src/functions.c`
