@@ -2,7 +2,11 @@
 #define DICT_MITM
 #include "numbers_shorthand.hpp"
 #include <cstddef>
+#include <cstring>
 #include <vector>
+#include <array>
+#include <algorithm>
+#include "functions.hpp"
 
 ///-----------------------------------------------------///
 ///                  data structure                     ///
@@ -13,41 +17,40 @@
 /* use move semantics to init the dict */
 template<typename C_type>
 struct dict { // todo think about replacement policy!
-    /* store pair pair0=(key0, value0) in a seperate arrays for alignment. */
-    /* The index of value0 in values is same as the index of key0 in keys. */
-    std::vector<std::pair<u64, C_type> > vec;
-    // old code
-    size_t n_elements; // total number of elements in the dictionary
-    size_t n_buckets{};
-    size_t n_slots_per_bucket{}; // = nelements / nbuckets
-
-    /* variables to check statistics */
-    size_t n_elements_asked_to_be_inserted{};
-    size_t n_probes_insert{};
-    size_t n_probes_lookup{};
-    // end of the old code
-
+    /// A stupid dictionary, however, from the outside it would be the same use regardless of internal optimizations.
+    /* A shortcut that saves typing */
+    using InpType = std::array<u8, 1 + max_length_inp + C_length> ;
+    std::vector< InpType > vec;
+    // variables to show statistics
+    size_t n_elements{0}; // total number of elements in the dictionary
+    size_t n_elements_asked_to_be_inserted{0};
+    size_t idx{0};
+    InpType zero{0};
 
     dict(size_t n_elements) : n_elements{n_elements} {
         vec.resize(n_elements);
+        /* Initialize the dictionary to zeros */
+        std::fill(vec.begin(), vec.end(), zero);
     }
 
-    auto search(std::pair<u64, u64>) -> int {
+    auto search(InpType& key) -> int {
+        std::memcpy(&idx, key.data(), sizeof(u64));
+        idx = idx % (1 + max_length_inp + C_length);
+
+        if (vec[idx] == key)
+            return 1;
         return 0;
     }
 
-    void insert(u64 val) {
-        n_buckets = nBuckets;
+    void insert(InpType key) { /* yes, we are copying the key here */
+        std::memcpy(&idx, key.data(), sizeof(u64));
+        idx = idx % (1 + max_length_inp + C_length);
+
+        if (vec[idx] == zero)/* we are not overwriting an existing slot */
+            ++n_elements; /* we have an extra element */
+        ++n_elements_asked_to_be_inserted;
+        vec[idx] = key; /* another copying occurs here, ouch! */
     }
 };
-
-///* todo move all these functions inside */
-//dict dict_create(size_t nelements);
-//void dict_insert(u32 val, dict *d);
-//int dict_search(u32 val, dict *d);
-//void dict_free(dict *d);
-//size_t dict_memory(dict *d);
-
-
 
 #endif

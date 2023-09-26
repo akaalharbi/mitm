@@ -3,12 +3,21 @@
 #include "numbers_shorthand.hpp"
 //#include "globals.hpp"
 
+/* These three constants should be provided by user! */
+constexpr int A_length = 64;
+constexpr int B_length = 64;
+constexpr int C_length = 64;
+
+constexpr size_t max_length_inp = std::max(A_length, B_length);
+/* triple = (is_f_or_g, input, output) */
+/*           (1 byte, max_length_inp bytes, C_length bytes) */
+constexpr int triple_length = (1 + max_length_inp + C_length);
+
+
 template<typename X_type>
 struct set_type {
     /*  How many BYTES needed to code an arbitrary element of X */
     const static size_t length; // I feel it should be a private variable!
-
-
 
     auto random() -> X_type; /* get a random element from X */
     auto identity() -> X_type; /* Get an element that */

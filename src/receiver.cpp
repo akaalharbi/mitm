@@ -36,7 +36,8 @@ void receiver(mitm_functions<A_type, B_type, C_type> funcs,
             MPI_Comm inter_comm)
 {
     /* initializes: dictionary, receive buffer, results buffer */
-    u8 recv_buf[];
+    u8 recv_buf[triple_length*n_msgs];
+    dict d{dict_size};
     /* listen to senders */
     /* probe their outputs in the dictionary */
     /* if the golden collision is found exits */

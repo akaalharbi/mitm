@@ -4,8 +4,7 @@
 #include "numbers_shorthand.hpp"
 #include "globals.hpp"
 #define SND_OUTPUTS_TAG 0
-#define  NMSGS 10000 /* The sender determines this number */
-// global constants 
+// global constants
 
 template<typename A_type, typename B_type, typename C_type>
 void sender(mitm_functions<A_type, B_type, C_type> funcs,
@@ -39,9 +38,9 @@ void sender(mitm_functions<A_type, B_type, C_type> funcs,
   /* We will be wasting bandwidth if we keep space for inp_A and inp_B  */
   /* instead we use  bit that says whether it's A or B + A or B + C output */
   // mpi junk
-  u8 snd_buf[n_receivers][triple_length * NMSGS]; /* does this gives */
+  u8 snd_buf[n_receivers][triple_length * n_msgs]; /* does this gives */
   for (int i = 0; i < n_receivers; ++i) /* init buffer with zeros */
-      memset(snd_buf[i], 0, triple_length*NMSGS);
+      memset(snd_buf[i], 0, triple_length*n_msgs);
 
   /* To know which buffer is ready to send */
   int receivers_counters[n_receivers];
@@ -113,10 +112,10 @@ void sender(mitm_functions<A_type, B_type, C_type> funcs,
           C.serialize(out, &snd_buf[ 1 + max_length_inp + idx*(triple_length) ]);
           ++receivers_counters[dest];
 
-          if (receivers_counters[dest] == NMSGS){
+          if (receivers_counters[dest] == n_msgs){
               // send it
               MPI_Send(snd_buf,
-                       NMSGS*triple_length,
+                       n_msgs*triple_length,
                        MPI_CHAR,
                        dest,
                        SND_OUTPUTS_TAG,
