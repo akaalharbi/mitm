@@ -1,6 +1,7 @@
 #ifndef FUNCTIONS_MITM
 #define FUNCTIONS_MITM
 #include "numbers_shorthand.hpp"
+//#include "globals.hpp"
 
 template<typename X_type>
 struct set_type {
