@@ -10,18 +10,19 @@ constexpr int A_length = 64;
 constexpr int B_length = 64;
 constexpr int C_length = 64;
 
-constexpr size_t max_length_inp = std::max(A_length, B_length);
+constexpr u64 max_length_inp = std::max(A_length, B_length);
 /* triple = (is_f_or_g, input, output) */
 /*           (1 byte, max_length_inp bytes, C_length bytes) */
-constexpr size_t triple_length = (1 + max_length_inp + C_length);
+constexpr u64 triple_length = (1 + max_length_inp + C_length);
 
-using KeyType = std::array<u8, 1 + max_length_inp + C_length>;
+/* to be deleted, we are using u8 arrays instead */
+//using KeyType = std::array<u8, 1 + max_length_inp + C_length>;
 
 
 template<typename X_type>
 struct type_functions {
     /*  How many BYTES needed to code an arbitrary element of X */
-    const static size_t length; // I feel it should be a private variable!
+    const static u64 length; // I feel it should be a private variable!
 
     auto random() -> X_type; /* get a random element from X */
     auto identity() -> X_type; /* Get an element that */

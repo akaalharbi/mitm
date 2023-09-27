@@ -4,7 +4,8 @@
 #include "dictionary.hpp"
 #include <mpi/mpi.h>
 #include <vector>
-
+#include <fstream>
+#include <iostream>
 
 /* save collision */
 template<typename A_type, typename B_type, typename C_type>
@@ -68,8 +69,17 @@ int probe_dict(u8* buff,
             /* Check is it a golden collision */
             /* if golden save it in disk, exit */
             if (is_golden){
+                // todo add more information for printing
+                std::cout << "Found a golden collision!\n";
+
                 /* just save the two triples in file data.bin */
-                // todo complete
+                std::fstream fileOut("collisions.dat", ios::out | ios::binary);
+
+                /* Write triple length, and always use 8 bytes to write it*/
+                fileOut.write(reinterpret_cast<char*>(triple_length), sizeof(u64));
+                fileOut.write(reinterpret_cast<char*>(&buff[triple_length*i]), triple_length);
+                fileOut.write(reinterpret_cast<char*>(result.data()), triple_length);
+
                 return 1;
             }
 
