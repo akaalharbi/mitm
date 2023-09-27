@@ -8,12 +8,41 @@
 
 /* save collision */
 template<typename A_type, typename B_type, typename C_type>
-void save_collision(type_functions<A_type>& A,
-                    type_functions<B_type>& B,
-                    type_functions<C_type>& C,
-                    A_type inp1,
-                    B_type inp2,
-                    C_type out){
+int verify_collision(u8* inp_1_bytes,
+                     u8* inp_2_bytes,
+                     mitm_functions<A_type, B_type, C_type>& funcs,
+                     type_functions<A_type>& A,
+                     type_functions<B_type>& B,
+                     type_functions<C_type>& C)
+{
+    /* static to make creation costs only once. */
+    static A_type inp_A;
+    static B_type inp_B;
+    static C_type out_A_to_C, out_B_to_C;
+    int is_golden = 0;
+
+    /* first byte tells us the name of the function */
+    if (inp_1_bytes[0] == inp_2_bytes[0])
+        return 0; /* We are not looking for collision with the same function f,f or g,g*/
+    /* now, we know inp_1_bytes is an input to a different function than inp_2_bytes */
+    /* However, we wish to determine if inp_1_bytes is an input to f or g */
+    if (inp_1_bytes[0] == 1 ){
+        /* inp_1_bytes is an input of f */
+        A.serial_to_type(inp_A, inp_1_bytes);
+        /* inp_2_bytes is an input of g */
+        B.serial_to_type(inp_B, inp_2_bytes);
+    } else {
+        /* inp_1_bytes is an input of g */
+        B.serial_to_type(inp_B, inp_1_bytes);
+        /* inp_2_bytes is an input of f */
+        A.serial_to_type(inp_A, inp_2_bytes);
+    }
+
+    /* Final test to make! */
+    return funcs.test_golden(inp_A, inp_B);
+
+
+
 
 }
 // print output that we found something interesting
@@ -21,9 +50,10 @@ void save_collision(type_functions<A_type>& A,
 template<typename A_type, typename B_type, typename C_type>
 int probe_dict(u8* buff,
                Dictionary& dict,
-               type_functions<A_type>& A,
-               type_functions<B_type>& B,
-               type_functions<C_type>& C)
+               const mitm_functions<A_type, B_type, C_type>& funcs,
+               const type_functions<A_type>& A,
+               const type_functions<B_type>& B,
+               const type_functions<C_type>& C)
 {
     int collision = 0;
     /* Extracted triple from dict if we found a match */
@@ -38,6 +68,8 @@ int probe_dict(u8* buff,
             /* Check is it a golden collision */
             /* if golden save it in disk, exit */
             if (is_golden){
+                /* just save the two triples in file data.bin */
+                // todo complete
                 return 1;
             }
 
@@ -46,12 +78,12 @@ int probe_dict(u8* buff,
 }
 
 template<typename A_type, typename B_type, typename C_type>
-void receiver(mitm_functions<A_type, B_type, C_type> funcs,
+void receiver(mitm_functions<A_type, B_type, C_type>& funcs,
               type_functions<A_type>& A,
               type_functions<B_type>& B,
               type_functions<C_type>& C,
               size_t dict_size, /* how many triples in the Dictionary */
-            MPI_Comm local_comm,
+              MPI_Comm local_comm,
               MPI_Comm inter_comm)
 {
     /* initializes: Dictionary, receive buffer, results buffer */
