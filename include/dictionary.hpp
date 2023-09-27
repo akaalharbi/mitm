@@ -38,18 +38,22 @@ struct Dictionary { // todo think about replacement policy!
         std::fill(vec.begin(), vec.end(), 0);
     }
 
-    void pop_insert(u8* key, u8* out) { /* don't modify out unless we found an element */
+    int pop_insert(u8* key, u8* out) {
+        /* The main function we are going to use, it does insert and search at the same time! */
         idx = idx % n_slots;
         /* if we have a collision then return 1 */
         if (   std::memcmp(&vec[idx], zero, triple_length) != 0 ){
             // out = vec[idx]
             std::memcpy(out, &vec[idx], triple_length);
             ++n_elements_popped;
+            ++n_elements_asked_to_be_inserted;
+            return 1; /* We  found a collision */
         }
 
         // vec[idx] = key;
         std::memcpy(&vec[idx], key, triple_length);
         ++n_elements_asked_to_be_inserted;
+        return 0; /* no collision was found */
     }
 };
 

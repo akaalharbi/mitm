@@ -26,12 +26,20 @@ int probe_dict(u8* buff,
                type_functions<C_type>& C)
 {
     int collision = 0;
+    /* Extracted triple from dict if we found a match */
+    std::array<u8, triple_length>  result{0};
+    int is_golden = 0;
+
     for (size_t i = 0; i<n_msgs*triple_length; i += triple_length){
-        collision = dict.search(&buff[i]);
+        collision = dict.pop_insert(&buff[triple_length*i], result.data());
         if (collision){ /* check is it the golden collision? */
             /* convert the input to A_type and B_type */
-            A_type inp_A;
-            B_type inp_B;
+            // todo continue here
+            /* Check is it a golden collision */
+            /* if golden save it in disk, exit */
+            if (is_golden){
+                return 1;
+            }
 
         }
     }
@@ -47,22 +55,30 @@ void receiver(mitm_functions<A_type, B_type, C_type> funcs,
               MPI_Comm inter_comm)
 {
     /* initializes: Dictionary, receive buffer, results buffer */
-    std::array<u8, triple_length*n_msgs> rcv_buf{0}; /* rcv_buf.data() is a contiguous array*/
+    /* Allocate receiving buffer */
+    std::vector<u8> rcv_buf(triple_length*n_msgs);
+    int is_golden = 0;
 
     Dictionary dict{dict_size};
     MPI_Status stat;
     int found_global = 0;
     /* listen to senders */
-    MPI_Recv(rcv_buf.data(),
-             triple_length*n_msgs,
-             MPI_CHAR,
-             MPI_ANY_SOURCE,
-             SND_OUTPUTS_TAG,
-             inter_comm,
-             &stat);
+    while (true) {
+        MPI_Recv(rcv_buf.data(), // I think C++ standard guarantees that rcv_buf[i] is contiguous
 
-    /* probe their outputs in the Dictionary */
-    probe_insert_golden_dict(rcv_buf.data(), dict, A, B, C);
+                 triple_length * n_msgs,
+                 MPI_CHAR,
+                 MPI_ANY_SOURCE,
+                 SND_OUTPUTS_TAG,
+                 inter_comm,
+                 &stat);
+
+        /* probe their outputs in the Dictionary */
+        is_golden = probe_dict(rcv_buf.data(), A, B, C);
+        if (is_golden)
+            return;
+    }
+// dict.pop_insert(rcv_buf.data(), result.data());
     /* if the golden collision is found exits */
 
 }
