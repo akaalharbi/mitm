@@ -7,6 +7,28 @@
 #include <fstream>
 #include <iostream>
 
+
+//void sort_input_by_function(u8* inp1, u8* inp2)
+//{
+//    /// Make sure that inp1 is an input of f and inp2 is an input of g
+//    /// We are guaranteed that inp1 and inp2 are large enough to hold either A input or B input.
+//
+//    u8 tmp[max_length_inp];
+//    /* i.e. inp1 is an input of f */
+//    if (inp1[0] == 0){
+//        return; /* nothing to do */
+//    }
+//    /* else inp1 is an input of g and inp2 is an input of f, reverse this situation */
+//
+//    /* save inp1 then erase content of inp1 */
+//    std::memcpy(tmp, inp1, B_length);
+//    std::memset(inp1, 0, B_length);
+//    /* swap inp1 and inp2 */
+//    std::memcpy(inp1, inp2, A_length);
+//    std::memset(inp2, 0, A_length);
+//    std::memcpy(inp2, tmp, B_length);
+//}
+
 /* save collision */
 template<typename A_type, typename B_type, typename C_type>
 int verify_collision(u8* inp_1_bytes,
@@ -41,10 +63,6 @@ int verify_collision(u8* inp_1_bytes,
 
     /* Final test to make! */
     return funcs.test_golden(inp_A, inp_B);
-
-
-
-
 }
 // print output that we found something interesting
 /* save the golden collisions */
@@ -75,11 +93,17 @@ int probe_dict(u8* buff,
                 /* just save the two triples in file data.bin */
                 std::fstream fileOut("collisions.dat", ios::out | ios::binary);
 
-                /* Write triple length, and always use 8 bytes to write it*/
+                /* Write triple: (triple_length, (f's triple), (g's triple) ) */
+                /* length, and always use 8 bytes to write it */
                 fileOut.write(reinterpret_cast<char*>(triple_length), sizeof(u64));
-                fileOut.write(reinterpret_cast<char*>(&buff[triple_length*i]), triple_length);
-                fileOut.write(reinterpret_cast<char*>(result.data()), triple_length);
-
+                /* Write first the triple of f, then the triple of g. */
+                if (buff[triple_length*i] == 0 ){ // i.e. buff[triple_length+i] is a triple of f
+                    fileOut.write(reinterpret_cast<char*>(&buff[triple_length*i]), triple_length);
+                    fileOut.write(reinterpret_cast<char*>(result.data()), triple_length);
+                } else {
+                    fileOut.write(reinterpret_cast<char*>(result.data()), triple_length);
+                    fileOut.write(reinterpret_cast<char*>(&buff[triple_length*i]), triple_length);
+                } // 5 levels of nesting, quite ugly.
                 return 1;
             }
 
