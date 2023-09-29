@@ -52,7 +52,7 @@ struct mitm_functions {
     /* g: B -> C */
     void g(C_type& C_out, B_type& B_inp);
     /* Did we find the golden collision? */
-    int test_golden(A_type& A_inp, B_type& B_inp);
+    auto test_golden(A_type& A_inp, B_type& B_inp) -> int;
     /* Normally, we have  A -> C, B -> C. Here we are looking for C -> A, C -> B */
     /* Functions below should not be complicated, only a simple embedding. */
     /* In case that output is shorter than the input, we need a way to extend it */
