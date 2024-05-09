@@ -9,11 +9,13 @@ import os
 # from tqdm import tqdm
 import subprocess
 import time
+import math
 
-bits_range = list(range(8, 10))
+bits_range = list(range(16, 17))
 # let's focus when they are equal
 all_triples = [(i, i, i) for i in bits_range]  # itr.product(bytes_range, repeat=3)
-nruns = 30  # How many times we run the code for the same triple value
+print(f"all triples= {all_triples}")
+nruns = 32  # How many times we run the code for the same triple value
 difficulty_range = 48  # i.e. difficulty between 0 and difficulty_range included
 
 
@@ -129,7 +131,8 @@ for triple in all_triples:
     compile_project()
 
     nbits_C = triple[-1]
-    for difficulty in range(min(difficulty_range + 1, nbits_C)):
+    difficulty_range = (nbits_C // 2) + 4
+    for difficulty in range(difficulty_range):
         rename_executable(nbits_C, difficulty)
 
     # for difficulty in range(min(difficulty_range + 1, nbits_C)):
@@ -147,15 +150,23 @@ repaeat = 40
 
 for triple in all_triples:
     nbits_C = triple[-1]
-    for difficulty in range(min(difficulty_range + 1, nbits_C//2)):
-        for log2_ram in range(nbits_C//2, nbits_C):
-            run_cmd = f"./sha2_collision_demo_{nbits_C}_{difficulty} {log2_ram} {difficulty}"
+    #difficulty_range = (nbits_C // 2) + 3
+    #for difficulty in range(min(difficulty_range + 1, nbits_C//2)):
+    #for difficulty in range(difficulty_range):
+    for log2_ram in range((nbits_C//2) - 2, (nbits_C//2) +  3 ):
+        # theta = alpha * sqrt(w/n), difficulty = 1/theta, alpha = 2.25,
+        # w = 2^log2_ram, n = 2^nbits_C
+        difficulty = int((nbits_C - log2_ram)//2 + math.log2(2.225))
+        run_cmd = f"./sha2_collision_demo_{nbits_C}_{difficulty} {log2_ram} {difficulty}"
+        for _ in range(nruns):
             commands.append(run_cmd)
+
+commands[::-1]
 
 
 # Running in Parallel
-timeout = 8*60
-max_processes = os.cpu_count()
+timeout = 60*60
+max_processes =  os.cpu_count() 
 print(f"Going to use {max_processes} parallel processes...")
 run_commands_in_parallel(commands, max_processes, timeout)
 
