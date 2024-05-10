@@ -15,7 +15,7 @@ bits_range = list(range(16, 17))
 # let's focus when they are equal
 all_triples = [(i, i, i) for i in bits_range]  # itr.product(bytes_range, repeat=3)
 print(f"all triples= {all_triples}")
-nruns = 32  # How many times we run the code for the same triple value
+nruns = 64  # How many times we run the code for the same triple value
 difficulty_range = 48  # i.e. difficulty between 0 and difficulty_range included
 
 
@@ -55,13 +55,11 @@ def compile_project():
     print_errors_if_any(result)
 
 
-
 def rename_executable(nbits_A_C, difficulty):
     move_cmd = f"cp sha2_collision_demo sha2_collision_demo_{nbits_A_C}_{difficulty}"
     result = subprocess.run(move_cmd, shell=True,
                             stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
     print_errors_if_any(result)
-
 
 
 def run_project(log2_nbytes, difficulty, timeout=300):
@@ -112,6 +110,7 @@ def run_commands_in_parallel(commands, max_processes, timeout=8*60):
             clean_up_processes()
 
         # Start a new subprocess
+        print(f"running {command}")
         process = subprocess.Popen(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
         processes.append(process)
         start_times[process] = time.time()  # Track the start time of this process
@@ -131,7 +130,7 @@ for triple in all_triples:
     compile_project()
 
     nbits_C = triple[-1]
-    difficulty_range = (nbits_C // 2) + 4
+    difficulty_range = (nbits_C)
     for difficulty in range(difficulty_range):
         rename_executable(nbits_C, difficulty)
 
@@ -146,7 +145,7 @@ for triple in all_triples:
     #             run_project(difficulty)
 
 commands = []
-repaeat = 40
+
 
 for triple in all_triples:
     nbits_C = triple[-1]
