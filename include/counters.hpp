@@ -92,14 +92,25 @@ struct Counters {
 	   "Took %0.2f sec to find the golden inputs.\n"
 	   "Saving the counters ...\n",
 	   total_time);
+
+    /* random suffix for name to have unique files */
+    /* initialize random seed: */
+    srand (time(NULL));
+    int rnd = rand();
+
     /* open folder (create it if it doesn't exist )*/
     std::ofstream summary;
     std::string d_name = "data/";
-    std::string f_name = d_name + problem_type + "_summary.csv";
-    create_folder_if_not_exist(d_name);
+    std::string f_name = d_name
+      + problem_type + "_"
+      + std::to_string(C_size) + "_"
+      + std::to_string(static_cast<int>(log2_nbytes)) + "_"
+      + std::to_string(difficulty) + "_"
+      + std::to_string(rnd) + "rr_"
+      + "summary.csv";
+
     int file_status = create_file_if_not_exist(f_name);
 
-      
     /* open the summary file */
     summary.open(f_name, std::ios::app);
 

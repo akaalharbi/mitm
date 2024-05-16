@@ -15,7 +15,7 @@ bits_range = list(range(16, 17))
 # let's focus when they are equal
 all_triples = [(i, i, i) for i in bits_range]  # itr.product(bytes_range, repeat=3)
 print(f"all triples= {all_triples}")
-nruns = 64  # How many times we run the code for the same triple value
+nruns = 4  # How many times we run the code for the same triple value
 difficulty_range = 48  # i.e. difficulty between 0 and difficulty_range included
 
 

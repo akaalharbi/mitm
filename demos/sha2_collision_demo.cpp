@@ -36,8 +36,8 @@ using i64 = int64_t;
 
 #define CEIL(a, b) (((a) + (b)-1) / (b))
 
-#define NBITS_A 16
-#define NBITS_C 16
+#define NBITS_A 16 
+#define NBITS_C 16 
 
 #define NBYTES_A CEIL(NBITS_A, 8)
 #define NBYTES_C CEIL(NBITS_C, 8)
