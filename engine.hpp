@@ -143,7 +143,7 @@ bool generate_dist_point(Problem& Pb,
   
   /* The probability, p, of NOT finding a distinguished point after the loop is
    * Let: theta := 2^-d
-   * difficulty, N = k*2^difficulty then,
+   * difficulty, N = k*2^difficulty then,ctr.n_points += chain_length0;
    * p = (1 - theta)^N =>  let ln(p) <= -k
    */
   constexpr u64 k = 40;
@@ -465,6 +465,7 @@ void search_generic(Problem& Pb,
       
       ++n_dist_points;
       ctr.increment_n_distinguished_points();
+      ctr.n_points += chain_length0;
 
       
       found_a_collision = dict.pop_insert(out0_digest, /* key */
