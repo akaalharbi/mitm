@@ -28,7 +28,8 @@ template<class repr>           /* repr must support comparisons, and assignment 
 class AbstractDomain {
 public:
 
-  int size; /* nbytes needed to encode an element */ 
+  int length;  /* nbytes needed to encode an element */
+  int size; // todo change the name of length to size
   size_t n_elements; /* how many elements in the domain */
   using t = repr;            /* t is the machine representation of elements of the domain */
 
@@ -38,7 +39,7 @@ public:
   bool is_equal(const t &x, const t &y) const;
 
   void serialize(const t &x, u8 *out) const;   /* write this to out */
-  void deserialize(const u8 *in, t &x) const;        /* read this from in */
+  void unserialize(const u8 *in, t &x) const;        /* read this from in */
   void copy(const t& inp, t& out) const; /* deepcopy inp to out */
 
 

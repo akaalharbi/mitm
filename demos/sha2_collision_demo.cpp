@@ -36,8 +36,8 @@ using i64 = int64_t;
 
 #define CEIL(a, b) (((a) + (b)-1) / (b))
 
-#define NBITS_A 16
-#define NBITS_C 16
+#define NBITS_A 16 
+#define NBITS_C 16 
 
 #define NBYTES_A CEIL(NBITS_A, 8)
 #define NBYTES_C CEIL(NBITS_C, 8)
@@ -179,10 +179,10 @@ public:
   using t = SHA2_out_repr;
 
     
-  const static int size = NBYTES_C;
+  const static int length = NBYTES_C;
   int a[NBYTES_C];
   
-  const static size_t n_elements = (1LL<<size)*8;
+  const static size_t n_elements = (1LL<<length)*8;
   /* todo: randomize */
   inline
   void randomize(t& x, mitm::PRNG& prng)
@@ -217,7 +217,7 @@ public:
   }
 
   inline
-  void deserialize(const u8* in, t& out) const
+  void unserialize(const u8* in, t& out) const
   {
     bits_memcpy(out.data, in, NBITS_C);
   }

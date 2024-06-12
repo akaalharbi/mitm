@@ -2,7 +2,6 @@
 #define MITM_COUNTERS
 #include "timing.hpp"
 #include "util_file_system.hpp"
-#include <cstddef>
 #include <numeric>
 #include <string>
 #include <vector>
@@ -84,7 +83,7 @@ struct Counters {
 			  size_t A_size,
 			  size_t B_size,
 			  size_t C_size,
-			  double log2_nwords, // how many words are stored in dict 
+			  double log2_nbytes,
 			  int difficulty)
   {
     end_time = wtime();
@@ -93,21 +92,32 @@ struct Counters {
 	   "Took %0.2f sec to find the golden inputs.\n"
 	   "Saving the counters ...\n",
 	   total_time);
+
+    /* random suffix for name to have unique files */
+    /* initialize random seed: */
+    srand (time(NULL));
+    int rnd = rand();
+
     /* open folder (create it if it doesn't exist )*/
     std::ofstream summary;
     std::string d_name = "data/";
-    std::string f_name = d_name + problem_type + "_summary.csv";
-    create_folder_if_not_exist(d_name);
+    std::string f_name = d_name
+      + problem_type + "_"
+      + std::to_string(C_size) + "_"
+      + std::to_string(static_cast<int>(log2_nbytes)) + "_"
+      + std::to_string(difficulty) + "_"
+      + std::to_string(rnd) + "rr_"
+      + "summary.csv";
+
     int file_status = create_file_if_not_exist(f_name);
 
-      
     /* open the summary file */
     summary.open(f_name, std::ios::app);
 
 
     std::string column_names = "";
     /* common suffix for both problems*/
-    std::string suffix = "log2(nwords),difficulty,#points,#distinguished_points,log2(#distinguished_points),#collisions,log2(#collisions),#updates,time(sec)\n";
+    std::string suffix = "log2(nbytes),difficulty,#points,#distinguished_points,log2(#distinguished_points),#collisions,log2(#collisions),#updates,time(sec)\n";
     /* Depending on the problem, we have different column names */
     if (problem_type == "claw")
       column_names = "C_size,A_size,B_size," + suffix;
@@ -137,7 +147,7 @@ struct Counters {
     std::string summary_data = std::to_string(C_size) + ", "
                              + std::to_string(A_size) + ", "
                              + B_data
-                             + std::to_string(log2_nwords) + ", "
+                             + std::to_string(log2_nbytes) + ", "
                              + std::to_string(difficulty)  + ", "
                              + std::to_string(n_points)  + ", "
                              + std::to_string(total_distinguished_points)  + ", "
